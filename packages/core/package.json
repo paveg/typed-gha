@@ -3,16 +3,23 @@
   "version": "0.0.1",
   "type": "module",
   "engines": { "node": ">=20.0.0" },
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./actions": "./src/actions/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./actions": {
+      "types": "./dist/actions/index.d.ts",
+      "import": "./dist/actions/index.js"
+    }
   },
+  "files": ["dist"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "tsc --noEmit"
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": { "yaml": "^2.6.0" },
   "devDependencies": {

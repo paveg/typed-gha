@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import * as yaml from 'yaml'
-import { emitYaml } from '../src/emit.ts'
-import type { Workflow, UsesStep } from '../src/types.ts'
+import { emitYaml } from '../src/emit.js'
+import type { Workflow, UsesStep } from '../src/types.js'
 
 const minimalWorkflow = (): Workflow => ({
   on: 'push',

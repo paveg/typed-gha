@@ -3,7 +3,7 @@ import { mkdtemp, mkdir, writeFile, readFile, rm, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
 import { parse } from 'yaml'
-import { runBuild } from '../src/build.ts'
+import { runBuild } from '../src/build.js'
 
 // Absolute path to @typed-gha/core so fixture TS files can import it from a tmp dir
 const CORE_INDEX = resolve(new URL('../../../packages/core/src/index.ts', import.meta.url).pathname)

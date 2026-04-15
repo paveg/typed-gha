@@ -3,7 +3,7 @@ import { resolve, dirname, basename } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { tsImport } from 'tsx/esm/api'
 import { emitYaml, type Workflow } from '@typed-gha/core'
-import { findWorkflows } from './discover.ts'
+import { findWorkflows } from './discover.js'
 
 type BuildOne = { source: string; output: string; yaml: string }
 

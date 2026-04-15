@@ -1,4 +1,4 @@
-import { makeAction } from './_factory.ts'
+import { makeAction } from './_factory.js'
 
 /**
  * Inputs for `aws-actions/configure-aws-credentials@v4`.

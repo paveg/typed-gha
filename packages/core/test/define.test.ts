@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { defineWorkflow } from '../src/define.ts'
-import type { Workflow } from '../src/types.ts'
+import { defineWorkflow } from '../src/define.js'
+import type { Workflow } from '../src/types.js'
 
 const workflow: Workflow = {
   on: 'push',

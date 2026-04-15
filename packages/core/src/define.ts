@@ -1,4 +1,4 @@
-import type { Workflow } from './types.ts'
+import type { Workflow } from './types.js'
 
 /**
  * Identity function that pins a `Workflow` literal at the call site.

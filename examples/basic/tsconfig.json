@@ -1,8 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@typed-gha/core": ["../../packages/core/src/index.ts"],
+      "@typed-gha/core/*": ["../../packages/core/src/*"]
+    }
   },
   "include": [".github/workflows/**/*.ts", "test/**/*.ts"]
 }

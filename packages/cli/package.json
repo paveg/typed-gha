@@ -4,10 +4,11 @@
   "type": "module",
   "engines": { "node": ">=22.0.0" },
   "bin": { "gha": "./src/index.ts" },
+  "files": ["dist"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "tsc --noEmit"
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@typed-gha/core": "workspace:*",

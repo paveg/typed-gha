@@ -2,7 +2,7 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { findWorkflows } from '../src/discover.ts'
+import { findWorkflows } from '../src/discover.js'
 
 describe('findWorkflows', () => {
   let tmp = ''

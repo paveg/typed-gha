@@ -2,8 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "types": ["node"],
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@typed-gha/core": ["../core/src/index.ts"],
+      "@typed-gha/core/*": ["../core/src/*"]
+    }
   },
   "include": ["src/**/*", "test/**/*"]
 }

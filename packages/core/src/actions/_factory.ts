@@ -1,4 +1,4 @@
-import type { UsesStep } from '../types.ts'
+import type { UsesStep } from '../types.js'
 
 type StepBase<Id extends string> = {
   id?: Id

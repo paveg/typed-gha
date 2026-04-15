@@ -1,4 +1,4 @@
-import { makeAction } from './_factory.ts'
+import { makeAction } from './_factory.js'
 
 /**
  * Inputs for `oven-sh/setup-bun@v2`.

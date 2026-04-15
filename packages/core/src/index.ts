@@ -13,7 +13,7 @@ export type {
   Strategy,
   Concurrency,
   Defaults,
-} from './types.ts'
+} from './types.js'
 
 export {
   defineWorkflow,
@@ -25,6 +25,6 @@ export {
   stepOutput,
   matrix,
   expr,
-} from './define.ts'
+} from './define.js'
 
-export { emitYaml } from './emit.ts'
+export { emitYaml } from './emit.js'

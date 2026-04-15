@@ -1,18 +1,14 @@
 import { makeAction } from './_factory.ts'
 
-export type SetupPnpmRunInstallEntry = {
-  recursive?: boolean
-  cwd?: string
-  args?: readonly string[]
-}
-
 export type SetupPnpmInputs = {
   version?: string | number
   dest?: string
-  /** Accepts boolean, a JSON string (e.g. YAML `|` block emitting JSON), or
-   *  a structured entry/array. The `unknown` third arm in earlier drafts
-   *  collapsed the whole union to `unknown`; this shape keeps narrowing. */
-  run_install?: boolean | string | SetupPnpmRunInstallEntry | readonly SetupPnpmRunInstallEntry[]
+  /** Boolean short-hand, a JSON-stringified config, or one/many structured entries. */
+  run_install?:
+    | boolean
+    | string
+    | { recursive?: boolean; cwd?: string; args?: readonly string[] }
+    | readonly { recursive?: boolean; cwd?: string; args?: readonly string[] }[]
 }
 
 export type SetupPnpmOutputs = Record<string, never>

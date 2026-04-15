@@ -1,12 +1,9 @@
 import { makeAction } from './_factory.ts'
 
 export type CacheInputs = {
-  /**
-   * An explicit list of files, directories, and wildcard patterns to cache and restore.
-   * Required in practice but typed optional since TypeScript cannot enforce required-ness inside `with`.
-   */
+  /** Required by the action, but typed optional: TS cannot enforce required-ness inside `with`. */
   path?: string
-  /** Primary cache key. Required in practice — see `path` note above. */
+  /** Required by the action; see `path`. */
   key?: string
   'restore-keys'?: string | readonly string[]
   'upload-chunk-size'?: number | string

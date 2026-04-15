@@ -6,6 +6,15 @@ import { emitYaml, type Workflow } from '@typed-gha/core'
 import { findWorkflows } from './discover.ts'
 
 type BuildOne = { source: string; output: string; yaml: string }
+
+/**
+ * Result returned by `runBuild`.
+ *
+ * - `built` — every workflow compiled during this run (present in both write and check modes).
+ * - `written` — paths written to disk; populated only in write mode (`check: false`).
+ * - `drift` — paths whose on-disk content differs from the generated YAML; populated only in
+ *   check mode (`check: true`). Non-empty means a committed `.yml` is out of sync.
+ */
 export type BuildResult = {
   built: readonly BuildOne[]
   written: readonly string[]
@@ -43,6 +52,23 @@ const buildOne = async (file: string): Promise<BuildOne> => {
   return { source: file, output: resolve(dirname(file), outName), yaml: emitYaml(workflow) }
 }
 
+/**
+ * Compiles all `*.workflow.ts` files found under `opts.cwd` to YAML.
+ *
+ * @remarks
+ * In **write mode** (`check: false`), each generated YAML string is written to the `.yml` file
+ * adjacent to its source. In **check mode** (`check: true`), no files are written — instead,
+ * the on-disk content is compared against the generated output and diverging paths are
+ * collected in `BuildResult.drift`.
+ *
+ * `runBuild` is side-effect-free beyond file I/O (no stdout/stderr output). Callers are
+ * responsible for all user-facing reporting based on the returned `BuildResult`.
+ *
+ * @param opts - Build options.
+ * @param opts.cwd - Root directory to search for workflow source files.
+ * @param opts.check - If `true`, compare generated YAML against existing files instead of writing.
+ * @returns A `BuildResult` describing what was compiled, written, and (in check mode) drifted.
+ */
 export const runBuild = async (opts: {
   cwd: string
   check: boolean

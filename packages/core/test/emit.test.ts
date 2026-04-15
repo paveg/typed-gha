@@ -96,21 +96,21 @@ describe('emitYaml', () => {
     expect(emitYaml(wf)).toBe(emitYaml(wf))
   })
 
-  it('renders boolean env value as unquoted YAML bool', () => {
+  it('renders boolean env value as unquoted YAML bool that round-trips to boolean', () => {
     const wf: Workflow = {
       on: 'push',
       jobs: {
         build: {
           'runs-on': 'ubuntu-latest',
-          env: { CI: 'true' },
+          env: { CI: true },
           steps: [{ run: 'echo hello' }],
         },
       },
     }
     const output = emitYaml(wf)
     const parsed = yaml.parse(output.replace(/^#.*\n/, ''))
-    // env values are strings in the type system; we verify the literal string is preserved
-    expect(parsed.jobs.build.env.CI).toBe('true')
+    expect(typeof parsed.jobs.build.env.CI).toBe('boolean')
+    expect(parsed.jobs.build.env.CI).toBe(true)
   })
 
   it('preserves expression strings literally in run steps', () => {

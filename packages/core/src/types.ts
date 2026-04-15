@@ -98,7 +98,8 @@ export type UsesStep<
   'continue-on-error'?: boolean | string
   'timeout-minutes'?: number
   'working-directory'?: string
-  /** Phantom field — never set at runtime; carries output type information only */
+  /** Type-only slot for an action's declared outputs. Consumers should not set or read this;
+   *  it exists to carry `Outputs` through inference and is stripped from YAML by `emitYaml`. */
   __outputs?: Outputs
 }
 

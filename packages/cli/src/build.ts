@@ -5,7 +5,7 @@ import { tsImport } from 'tsx/esm/api'
 import { emitYaml, type Workflow } from '@typed-gha/core'
 import { findWorkflows } from './discover.ts'
 
-export type BuildOne = { source: string; output: string; yaml: string }
+type BuildOne = { source: string; output: string; yaml: string }
 export type BuildResult = {
   built: readonly BuildOne[]
   written: readonly string[]
@@ -31,7 +31,7 @@ const loadWorkflow = async (file: string): Promise<Workflow> => {
   return value as Workflow
 }
 
-export const buildOne = async (file: string): Promise<BuildOne> => {
+const buildOne = async (file: string): Promise<BuildOne> => {
   const workflow = await loadWorkflow(file)
   const outName = basename(file).replace(/\.workflow\.ts$/, '.yml')
   return { source: file, output: resolve(dirname(file), outName), yaml: emitYaml(workflow) }
@@ -56,7 +56,5 @@ export const runBuild = async (opts: {
       written.push(one.output)
     }
   }
-  for (const p of written) process.stdout.write(`wrote: ${p}\n`)
-  for (const p of drift) process.stderr.write(`drift: ${p}\n`)
   return { built, written, drift }
 }

@@ -9,6 +9,8 @@ const main = async (): Promise<void> => {
     process.exit(2)
   }
   const result = await runBuild({ cwd: args.cwd, check: args.check })
+  for (const p of result.written) process.stdout.write(`wrote: ${p}\n`)
+  for (const p of result.drift) process.stderr.write(`drift: ${p}\n`)
   if (args.check && result.drift.length > 0) process.exit(1)
 }
 

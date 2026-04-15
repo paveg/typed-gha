@@ -2,6 +2,7 @@
   "name": "@typed-gha/cli",
   "version": "0.0.1",
   "type": "module",
+  "engines": { "node": ">=22.0.0" },
   "bin": { "gha": "./src/index.ts" },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -12,10 +12,16 @@ export type BuildResult = {
   drift: readonly string[]
 }
 
+/** tsx 4.x `tsImport` wraps an ESM `export default X` as
+ *  `{ default: { __esModule: true, default: X } }` — an esbuild CJS-interop artifact,
+ *  NOT standard ESM. Native `import()` returns `{ default: X }` directly. We deliberately
+ *  require the `__esModule: true` marker so a fixture like `export const x = {}` (no
+ *  default export at all) is rejected rather than silently treated as a workflow.
+ *  Revisit if the loader ever changes (native import, Node `--experimental-strip-types`,
+ *  jiti, etc.) — workflow files would silently load as `undefined`. */
 type TsxMod = { default?: { __esModule?: boolean; default?: unknown } }
 
 const loadWorkflow = async (file: string): Promise<Workflow> => {
-  // tsx wraps ESM modules: real default is at mod.default.default when __esModule is true
   const mod = (await tsImport(pathToFileURL(file).href, import.meta.url)) as TsxMod
   const wrapper = mod.default
   const value = wrapper?.__esModule === true ? wrapper.default : undefined

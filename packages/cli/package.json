@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "type": "module",
   "engines": { "node": ">=22.0.0" },
-  "bin": { "gha": "./src/index.ts" },
+  "bin": { "gha": "./dist/index.js" },
   "files": ["dist"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json && node scripts/fix-bin-shebang.mjs",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "@typed-gha/core": "workspace:*",

@@ -5,7 +5,8 @@
   "scripts": {
     "build": "gha build",
     "check": "gha build --check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@typed-gha/core": "workspace:*",

@@ -12,19 +12,25 @@ export type BuildResult = {
   drift: readonly string[]
 }
 
-/** tsx 4.x `tsImport` wraps an ESM `export default X` as
- *  `{ default: { __esModule: true, default: X } }` — an esbuild CJS-interop artifact,
- *  NOT standard ESM. Native `import()` returns `{ default: X }` directly. We deliberately
- *  require the `__esModule: true` marker so a fixture like `export const x = {}` (no
- *  default export at all) is rejected rather than silently treated as a workflow.
- *  Revisit if the loader ever changes (native import, Node `--experimental-strip-types`,
- *  jiti, etc.) — workflow files would silently load as `undefined`. */
-type TsxMod = { default?: { __esModule?: boolean; default?: unknown } }
+/** tsx `tsImport` has two loading modes depending on whether the loaded file is treated as CJS or ESM:
+ *  - CJS context (no surrounding "type":"module" package.json): esbuild interop wraps exports as
+ *    `{ default: { __esModule: true, default: X }, "module.exports": {...} }`. The `module.exports`
+ *    key is present and `__esModule: true` marks a real default export.
+ *  - ESM context (inside a "type":"module" package): native ESM — `mod` has only a `default` key.
+ *    `export default X` → `mod.default = X`; no default export → `mod.default = undefined`.
+ *  Strategy: if the outer `mod` contains a `module.exports` key it's CJS-loaded; require
+ *  `__esModule: true` to confirm a real default export. Otherwise use `mod.default` directly. */
+type TsxMod = { default?: { __esModule?: boolean; default?: unknown } | unknown; 'module.exports'?: unknown }
 
 const loadWorkflow = async (file: string): Promise<Workflow> => {
   const mod = (await tsImport(pathToFileURL(file).href, import.meta.url)) as TsxMod
+  const isCjs = 'module.exports' in mod
   const wrapper = mod.default
-  const value = wrapper?.__esModule === true ? wrapper.default : undefined
+  const value = isCjs
+    ? wrapper !== null && typeof wrapper === 'object' && (wrapper as { __esModule?: boolean }).__esModule === true
+      ? (wrapper as { __esModule: boolean; default?: unknown }).default
+      : undefined
+    : wrapper
   if (value === null || value === undefined || typeof value !== 'object') {
     throw new Error(`${file}: missing default export of a Workflow object`)
   }

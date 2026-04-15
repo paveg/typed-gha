@@ -1,0 +1,17 @@
+{
+  "name": "example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "gha build",
+    "check": "gha build --check",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@typed-gha/core": "workspace:*",
+    "@typed-gha/cli": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "2.1.9"
+  }
+}

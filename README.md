@@ -132,4 +132,4 @@ helpers, enabled by the `const` type-parameter preservation landed in Phase 1.
 - [ADR index](docs/adr/) — architecture decision records
   - [ADR-0001: Functional API over builder pattern](docs/adr/0001-functional-api-over-builder-pattern.md)
   - [ADR-0002: Handwritten action types for Phase 1](docs/adr/0002-handwritten-action-types-phase1.md)
-- License: (TBD)
+- [MIT License](LICENSE)

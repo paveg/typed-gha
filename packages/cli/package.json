@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@typed-gha/core": "workspace:*",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "yaml": "^2.6.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

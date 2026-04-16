@@ -13,6 +13,10 @@
     "./actions": {
       "types": "./dist/actions/index.d.ts",
       "import": "./dist/actions/index.js"
+    },
+    "./actions/_factory": {
+      "types": "./dist/actions/_factory.d.ts",
+      "import": "./dist/actions/_factory.js"
     }
   },
   "files": ["dist"],

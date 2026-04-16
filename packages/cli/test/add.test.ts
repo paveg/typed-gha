@@ -51,7 +51,7 @@ describe('runAdd', () => {
     expect(content).toContain("'node-version'?: string")
     expect(content).toContain('lfs?: boolean | string')
     expect(content).toContain("'fetch-depth'?: number | string")
-    expect(content).toContain("'cache-hit'?: string")
+    expect(content).toContain("'cache-hit': string")
     expect(content).toContain('export const setupNode = makeAction<')
   })
 

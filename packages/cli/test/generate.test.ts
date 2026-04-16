@@ -114,8 +114,8 @@ describe('generateWrapper', () => {
 
   it('renders outputs with string type', () => {
     const result = generateWrapper(fullAction, makeSource('actions/checkout@v4'))
-    expect(result).toContain("ref?: string")
-    expect(result).toContain("commit?: string")
+    expect(result).toContain("ref: string")
+    expect(result).toContain("commit: string")
   })
 
   it('uses Record<string, never> for empty outputs', () => {

@@ -42,7 +42,7 @@ const renderOutputField = (output: ParsedOutput): string => {
   const keyStr = isValidIdentifier(output.key) ? output.key : `'${output.key}'`
   const lines: string[] = []
   lines.push(`  /** ${output.description} */`)
-  lines.push(`  ${keyStr}?: string`)
+  lines.push(`  ${keyStr}: string`)
   return lines.join('\n')
 }
 

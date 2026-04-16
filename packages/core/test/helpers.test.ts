@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { secret, variable, env, github, needs, stepOutput, matrix, expr } from '../src/define.ts'
+import { secret, variable, env, github, needs, stepOutput, matrix, expr } from '../src/define.js'
 
 describe('expression helpers', () => {
   it('secret()', () => {

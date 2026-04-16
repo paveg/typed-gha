@@ -1,6 +1,6 @@
 #!/usr/bin/env -S npx tsx
-import { runBuild } from './build.ts'
-import { parseArgs } from './args.ts'
+import { runBuild } from './build.js'
+import { parseArgs } from './args.js'
 
 const main = async (): Promise<void> => {
   const args = parseArgs(process.argv)

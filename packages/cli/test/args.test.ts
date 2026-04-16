@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseArgs } from '../src/args.ts'
+import { parseArgs } from '../src/args.js'
 
 describe('parseArgs', () => {
   it('defaults to build cmd with no extra args', () => {

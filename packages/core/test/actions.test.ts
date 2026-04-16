@@ -1,7 +1,7 @@
 import { describe, it, expect, expectTypeOf } from 'vitest'
 import { parse } from 'yaml'
-import { emitYaml } from '../src/emit.ts'
-import type { UsesStep } from '../src/types.ts'
+import { emitYaml } from '../src/emit.js'
+import type { UsesStep } from '../src/types.js'
 import {
   checkout,
   setupNode,
@@ -14,7 +14,7 @@ import {
   downloadArtifact,
   wrangler,
   awsCredentials,
-} from '../src/actions/index.ts'
+} from '../src/actions/index.js'
 import type {
   CheckoutInputs,
   CheckoutOutputs,
@@ -22,7 +22,7 @@ import type {
   SetupNodeOutputs,
   UploadArtifactInputs,
   UploadArtifactOutputs,
-} from '../src/actions/index.ts'
+} from '../src/actions/index.js'
 
 describe('actions runtime behavior', () => {
   it('checkout() returns uses with no with key', () => {

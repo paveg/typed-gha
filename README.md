@@ -26,10 +26,27 @@ Write workflows as `.workflow.ts` files. Run `gha build` to emit the YAML. Use
 - **Pure functional API** — workflows are plain TypeScript values. No classes, no
   builder chains. Compose with destructuring and spread like any other object.
 
-## Quickstart
+## Status
+
+**Pre-release.** The packages are not yet published to npm. To try the
+project today, clone this repo and use it from the workspace, or install
+directly from git:
 
 ```bash
-pnpm add -D @typed-gha/core @typed-gha/cli
+pnpm add -D 'github:paveg/typed-gha#main&path:/packages/core' 'github:paveg/typed-gha#main&path:/packages/cli'
+```
+
+(Subpath installs from a monorepo via the git protocol require pnpm 9+.
+Behavior may vary across package managers.)
+
+A real npm release will follow once the API surface stabilizes and
+versioning policy is decided.
+
+## Quickstart
+
+Once installed (see Status above):
+
+```bash
 mkdir -p .github/workflows
 ```
 
@@ -153,21 +170,24 @@ setupGo({ with: { 'go-version': '1.23' } })
 - **`@typed-gha/core`**: Node ≥ 20 (no Node 22 APIs in core; safe as a pure library dependency).
 - Compatible with pnpm, npm, and yarn workspaces.
 
-## Status & roadmap
+## Roadmap
 
-**Phase 1 (shipped)** — functional API, 11 handwritten typed wrappers, `gha build`
-CLI with `--check` mode.
+**Phase 1 (implemented)** — functional API, 11 handwritten typed wrappers,
+`gha build` CLI with `--check` mode.
 
-**Phase 1.5 (shipped)** — publishable packages: `tsc` compile pipeline,
-node shebang on the CLI bin, TSDoc on all public API surfaces.
+**Phase 1.5 (implemented)** — packaging: `tsc` compile pipeline, node shebang
+on the CLI bin, TSDoc on all public API surfaces. Ready for publish; not yet
+released to npm.
 
-**Phase 2 (shipped)** — `gha add <owner/repo@ref>` generates a typed wrapper
-from any action's `action.yml`, using the same `makeAction` factory shape as
-the handwritten set. Workflow code written against Phase 1 wrappers keeps
-working unchanged.
+**Phase 2 (implemented)** — `gha add <owner/repo@ref>` generates a typed
+wrapper from any action's `action.yml`, using the same `makeAction` factory
+shape as the handwritten set. Workflow code written against Phase 1 wrappers
+keeps working unchanged.
 
 **Phase 3 (next)** — typed step outputs across `needs()` / `stepOutput()`
 helpers, enabled by the `const` type-parameter preservation landed in Phase 1.
+
+**npm release** — pending API stabilization and versioning decision.
 
 ## Links
 

@@ -10,6 +10,7 @@
     "example:build": "pnpm --filter example exec gha build"
   },
   "devDependencies": {
+    "@typed-gha/cli": "workspace:*",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }

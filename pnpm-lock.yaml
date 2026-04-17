@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@typed-gha/cli':
+        specifier: workspace:*
+        version: link:packages/cli
       tsx:
         specifier: ^4.19.0
         version: 4.21.0

@@ -126,4 +126,105 @@ describe('emitYaml', () => {
     const output = emitYaml(wf)
     expect(output).toContain('${{ github.event_name }}')
   })
+
+  it('strips __ phantom keys at any nesting depth', () => {
+    const wf: Workflow = {
+      on: 'push',
+      jobs: {
+        build: {
+          'runs-on': 'ubuntu-latest',
+          steps: [
+            { uses: 'actions/checkout@v4', __outputs: { ref: '' } as never } as never,
+          ],
+        },
+      },
+    }
+    // Add a nested phantom field deep inside
+    const buildJob = wf.jobs.build
+    if (buildJob) {
+      const step0 = buildJob.steps[0] as { with?: Record<string, unknown> & { __nested?: unknown } }
+      step0.with = {
+        foo: 'bar',
+        __nested: 'should-be-stripped',
+      }
+    }
+    const out = emitYaml(wf)
+    expect(out).not.toContain('__nested')
+    expect(out).not.toContain('__outputs')
+    expect(out).toContain('foo: bar')
+  })
+
+  it('preserves arrays of arrays in matrix include', () => {
+    const wf: Workflow = {
+      on: 'push',
+      jobs: {
+        test: {
+          'runs-on': 'ubuntu-latest',
+          strategy: {
+            matrix: {
+              os: ['ubuntu-latest', 'macos-latest'],
+              node: ['20', '22'],
+            },
+          },
+          steps: [{ run: 'echo test' }],
+        },
+      },
+    }
+    const out = emitYaml(wf)
+    // Parse back and verify arrays survive
+    const parsed = yaml.parse(out.replace(/^#.*\n/, ''))
+    expect(parsed.jobs.test.strategy.matrix.os).toEqual(['ubuntu-latest', 'macos-latest'])
+    expect(parsed.jobs.test.strategy.matrix.node).toEqual(['20', '22'])
+  })
+
+  it('does not fold long strings under lineWidth: 0', () => {
+    const longRun = 'echo ' + 'x'.repeat(500)
+    const wf: Workflow = {
+      on: 'push',
+      jobs: {
+        build: {
+          'runs-on': 'ubuntu-latest',
+          steps: [{ run: longRun }],
+        },
+      },
+    }
+    const out = emitYaml(wf)
+    // The long line should appear as one line (no internal newline)
+    const runLines = out.split('\n').filter((l) => l.includes('echo'))
+    expect(runLines.length).toBe(1)
+    expect(runLines[0]).toContain('x'.repeat(500))
+  })
+
+  it('preserves null at nested depth', () => {
+    const wf: Workflow = {
+      on: 'push',
+      jobs: {
+        build: {
+          'runs-on': 'ubuntu-latest',
+          env: { OPTIONAL_VAR: null as unknown as string },
+          steps: [{ run: 'echo ok' }],
+        },
+      },
+    }
+    const out = emitYaml(wf)
+    const parsed = yaml.parse(out.replace(/^#.*\n/, ''))
+    expect(parsed.jobs?.build?.env?.OPTIONAL_VAR).toBeNull()
+  })
+
+  it('strips undefined at nested depth', () => {
+    const wf: Workflow = {
+      on: 'push',
+      jobs: {
+        build: {
+          'runs-on': 'ubuntu-latest',
+          env: { KEPT: 'value', DROPPED: undefined as unknown as string },
+          steps: [{ run: 'echo ok' }],
+        },
+      },
+    }
+    const out = emitYaml(wf)
+    const parsed = yaml.parse(out.replace(/^#.*\n/, ''))
+    expect(parsed.jobs?.build?.env?.KEPT).toBe('value')
+    expect('DROPPED' in (parsed.jobs?.build?.env ?? {})).toBe(false)
+  })
 })

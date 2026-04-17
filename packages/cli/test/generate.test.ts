@@ -128,3 +128,58 @@ describe('generateWrapper', () => {
     expect(result).toContain("makeAction<'actions/setup-node@v4', SetupNodeInputs, SetupNodeOutputs>('actions/setup-node@v4')")
   })
 })
+
+describe('generateWrapper — reserved keyword handling', () => {
+  it('appends underscore to function name when camelCase form is a reserved word', () => {
+    const action: ParsedAction = {
+      name: 'Class', description: 'desc',
+      inputs: [], outputs: [], runsUsing: 'node20',
+    }
+    const result = generateWrapper(action, makeSource('owner/class@v1'))
+    expect(result).toContain('export const class_ = makeAction<')
+    expect(result).not.toContain('export const class =')
+  })
+
+  it('appends underscore for delete, new, default, etc.', () => {
+    for (const name of ['delete', 'new', 'default', 'function', 'return']) {
+      const action: ParsedAction = {
+        name, description: '', inputs: [], outputs: [], runsUsing: 'node20',
+      }
+      const result = generateWrapper(action, makeSource(`owner/${name}@v1`))
+      expect(result).toContain(`export const ${name}_ = makeAction<`)
+    }
+  })
+
+  it('quotes input keys that are reserved words', () => {
+    const action: ParsedAction = {
+      name: 'Test', description: '',
+      inputs: [{ key: 'class', description: 'A class', required: false, inferredType: 'string' }],
+      outputs: [], runsUsing: 'node20',
+    }
+    const result = generateWrapper(action, makeSource('owner/test@v1'))
+    expect(result).toContain("'class'?: string")
+    expect(result).not.toMatch(/^\s*class\?: string/m)
+  })
+
+  it('quotes output keys that are reserved words', () => {
+    const action: ParsedAction = {
+      name: 'Test', description: '',
+      inputs: [],
+      outputs: [{ key: 'return', description: 'The return value' }],
+      runsUsing: 'node20',
+    }
+    const result = generateWrapper(action, makeSource('owner/test@v1'))
+    expect(result).toContain("'return': string")
+    expect(result).not.toMatch(/^\s*return: string/m)
+  })
+
+  it('does not affect non-reserved names', () => {
+    const action: ParsedAction = {
+      name: 'Setup Node', description: '',
+      inputs: [], outputs: [], runsUsing: 'node20',
+    }
+    const result = generateWrapper(action, makeSource('actions/setup-node@v4'))
+    expect(result).toContain('export const setupNode = makeAction<')
+    expect(result).not.toContain('setupNode_')
+  })
+})

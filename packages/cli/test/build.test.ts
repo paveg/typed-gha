@@ -22,6 +22,12 @@ export default defineWorkflow({
 
 const BAD_FIXTURE = `export const x = {}`
 
+// Non-object default exports — each should be rejected by the typeof !== 'object' guard in loadWorkflow
+const FUNCTION_EXPORT_FIXTURE = `export default () => ({ on: 'push', jobs: {} })`
+const NULL_EXPORT_FIXTURE = `export default null`
+const NUMBER_EXPORT_FIXTURE = `export default 42`
+const STRING_EXPORT_FIXTURE = `export default 'hello'`
+
 describe('runBuild', () => {
   let tmp = ''
 
@@ -90,6 +96,43 @@ describe('runBuild', () => {
     const result = await runBuild({ cwd: tmp, check: true })
     expect(result.drift).toHaveLength(1)
     expect(result.drift[0]).toBe(outPath)
+  })
+
+  // --- Non-object default export tests ---
+  // The guard at build.ts line ~43: `typeof value !== 'object'` rejects function/null/number/string.
+
+  it('throws when default export is a function', async () => {
+    tmp = await mkdtemp(join(tmpdir(), 'typed-gha-build-'))
+    await makeWorkflowFile('fn.workflow.ts', FUNCTION_EXPORT_FIXTURE)
+
+    // A function passes typeof check (`typeof fn === 'function'`, not 'object'), so it should throw.
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/fn\.workflow\.ts/)
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/missing default export/)
+  })
+
+  it('throws when default export is null', async () => {
+    tmp = await mkdtemp(join(tmpdir(), 'typed-gha-build-'))
+    await makeWorkflowFile('null.workflow.ts', NULL_EXPORT_FIXTURE)
+
+    // null satisfies `typeof null === 'object'` but fails the `value === null` check first.
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/null\.workflow\.ts/)
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/missing default export/)
+  })
+
+  it('throws when default export is a number', async () => {
+    tmp = await mkdtemp(join(tmpdir(), 'typed-gha-build-'))
+    await makeWorkflowFile('num.workflow.ts', NUMBER_EXPORT_FIXTURE)
+
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/num\.workflow\.ts/)
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/missing default export/)
+  })
+
+  it('throws when default export is a string', async () => {
+    tmp = await mkdtemp(join(tmpdir(), 'typed-gha-build-'))
+    await makeWorkflowFile('str.workflow.ts', STRING_EXPORT_FIXTURE)
+
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/str\.workflow\.ts/)
+    await expect(runBuild({ cwd: tmp, check: false })).rejects.toThrow(/missing default export/)
   })
 
   it('check mode with two workflows only flags the drifted one', async () => {

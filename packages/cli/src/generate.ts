@@ -1,6 +1,17 @@
 import type { ParsedAction, ParsedInput, ParsedOutput } from './parse.js'
 import type { ActionSource } from './resolve.js'
 
+// ECMAScript §11.6.2 reserved words + strict-mode additions; used to avoid emitting invalid identifiers
+const RESERVED_WORDS = new Set([
+  'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger',
+  'default', 'delete', 'do', 'else', 'enum', 'export', 'extends',
+  'false', 'finally', 'for', 'function', 'if', 'import', 'in',
+  'instanceof', 'new', 'null', 'return', 'super', 'switch', 'this',
+  'throw', 'true', 'try', 'typeof', 'var', 'void', 'while', 'with',
+  'yield', 'let', 'static', 'implements', 'interface', 'package',
+  'private', 'protected', 'public',
+])
+
 // Extract the action name segment from a ref like 'actions/setup-node@v4' → 'setup-node'
 const extractBaseName = (ref: string): string => {
   // Remove version suffix (e.g. @v4)
@@ -23,8 +34,9 @@ const toPascalCase = (name: string): string => {
   return camel.charAt(0).toUpperCase() + camel.slice(1)
 }
 
-// Returns true if the key is a valid JS identifier (no quoting needed)
-const isValidIdentifier = (key: string): boolean => /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
+// Returns true if the key can be used unquoted: valid identifier syntax AND not a reserved word
+const isValidIdentifier = (key: string): boolean =>
+  /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) && !RESERVED_WORDS.has(key)
 
 const renderInputField = (input: ParsedInput): string => {
   const keyStr = isValidIdentifier(input.key) ? input.key : `'${input.key}'`
@@ -48,7 +60,9 @@ const renderOutputField = (output: ParsedOutput): string => {
 
 export const generateWrapper = (parsed: ParsedAction, source: ActionSource): string => {
   const baseName = extractBaseName(source.ref)
-  const camelName = toCamelCase(baseName)
+  // Append trailing underscore if camelCase name is a reserved word (protobuf-ts convention)
+  const rawCamelName = toCamelCase(baseName)
+  const camelName = RESERVED_WORDS.has(rawCamelName) ? `${rawCamelName}_` : rawCamelName
   const pascalName = toPascalCase(baseName)
 
   const inputsTypeName = `${pascalName}Inputs`

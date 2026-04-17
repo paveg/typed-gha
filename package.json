@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@typed-gha/cli": "workspace:*",
+    "@typed-gha/core": "workspace:*",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
   }

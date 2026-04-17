@@ -11,6 +11,9 @@ importers:
       '@typed-gha/cli':
         specifier: workspace:*
         version: link:packages/cli
+      '@typed-gha/core':
+        specifier: workspace:*
+        version: link:packages/core
       tsx:
         specifier: ^4.19.0
         version: 4.21.0

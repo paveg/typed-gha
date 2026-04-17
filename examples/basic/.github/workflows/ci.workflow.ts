@@ -15,7 +15,7 @@ export default defineWorkflow({
       },
       steps: [
         checkout(),
-        setupPnpm({ with: { version: '9' } }),
+        setupPnpm(),
         setupNode({ with: { 'node-version': matrix('node-version'), cache: 'pnpm' } }),
         { run: 'pnpm install --frozen-lockfile' },
         { run: 'pnpm test' },

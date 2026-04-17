@@ -13,7 +13,7 @@ export default defineWorkflow({
       'runs-on': 'ubuntu-latest',
       steps: [
         checkout(),
-        setupPnpm({ with: { version: '9' } }),
+        setupPnpm(),
         setupNode({ with: { 'node-version': '22', cache: 'pnpm' } }),
         { name: 'Install', run: 'pnpm install --frozen-lockfile' },
         { name: 'Typecheck', run: 'pnpm -r typecheck' },
@@ -27,7 +27,7 @@ export default defineWorkflow({
       },
       steps: [
         checkout(),
-        setupPnpm({ with: { version: '9' } }),
+        setupPnpm(),
         setupNode({ with: { 'node-version': matrix('node-version'), cache: 'pnpm' } }),
         { name: 'Install', run: 'pnpm install --frozen-lockfile' },
         { name: 'Test', run: 'pnpm -r test' },

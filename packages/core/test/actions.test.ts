@@ -131,6 +131,31 @@ describe('actions type-level tests', () => {
     uploadArtifact({ with: { 'if-no-files-found': 'ignore' } })
   })
 
+  it('setupPython cache rejects invalid values at type level', () => {
+    // @ts-expect-error 'invalid' is not 'pip' | 'pipenv' | 'poetry'
+    setupPython({ with: { cache: 'invalid' } })
+  })
+
+  it('setupPython cache accepts valid values', () => {
+    // Should compile without error
+    setupPython({ with: { cache: 'pip' } })
+    setupPython({ with: { cache: 'pipenv' } })
+    setupPython({ with: { cache: 'poetry' } })
+  })
+
+  it('wrangler packageManager rejects invalid values at type level', () => {
+    // @ts-expect-error 'invalid' is not 'npm' | 'yarn' | 'pnpm' | 'bun'
+    wrangler({ with: { packageManager: 'invalid' } })
+  })
+
+  it('wrangler packageManager accepts valid values', () => {
+    // Should compile without error
+    wrangler({ with: { packageManager: 'npm' } })
+    wrangler({ with: { packageManager: 'yarn' } })
+    wrangler({ with: { packageManager: 'pnpm' } })
+    wrangler({ with: { packageManager: 'bun' } })
+  })
+
   it('checkout with id literal produces correctly typed UsesStep', () => {
     const step = checkout({ id: 'co' })
     // This assignment would fail if Id were widened to string instead of 'co'

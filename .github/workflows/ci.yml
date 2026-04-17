@@ -19,6 +19,8 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm build
       - name: Typecheck
         run: pnpm -r typecheck
       - name: Workflow drift
@@ -39,5 +41,7 @@ jobs:
           cache: pnpm
       - name: Install
         run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm build
       - name: Test
         run: pnpm -r test

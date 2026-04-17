@@ -19,6 +19,10 @@ Write workflows as `.workflow.ts` files. Run `gha build` to emit the YAML. Use
 - **`gha build` CLI** — discovers every `*.workflow.ts` under your project,
   compiles each one, and writes a `.yml` file next to the source. `--check` mode
   diffs the generated YAML against the committed file and exits 1 on any drift.
+- **`gha add` codegen** — point at any action's `action.yml` (local path or
+  `owner/repo@ref` on GitHub) and a typed wrapper file is generated using the
+  same `makeAction` shape as the curated set. Drop-in compatible with the
+  handwritten wrappers above.
 - **Pure functional API** — workflows are plain TypeScript values. No classes, no
   builder chains. Compose with destructuring and spread like any other object.
 
@@ -97,6 +101,44 @@ expr("contains(github.ref, 'main')") // ${{ contains(github.ref, 'main') }}
 All helpers return plain strings, so they slot into any field that accepts a
 GitHub Actions expression.
 
+## Generating wrappers for arbitrary actions
+
+The curated 11 wrappers cover the most common actions, but any action with an
+`action.yml` can be added on demand:
+
+```bash
+# Remote — fetched via gh CLI (with private-repo auth) or raw.githubusercontent
+pnpm exec gha add actions/setup-go@v5
+# → .github/typed-gha-actions/actions-setup-go.ts
+
+# Local — composite action in the same repo or a sibling path
+pnpm exec gha add ./actions/my-internal-action
+
+# Custom output directory
+pnpm exec gha add actions/cache@v4 --dir src/generated/actions
+```
+
+The generated file is committed to your repo. Re-run the same command after a
+ref bump (`@v5` → `@v6`) to regenerate. Type inference applies a small set of
+heuristics from the action's `default` values:
+
+| `action.yml` says | Generated TS type |
+| --- | --- |
+| `default: false` / `default: true` | `boolean \| string` |
+| `default: 1` (any number) | `number \| string` |
+| `default: "foo"` or no default | `string` |
+
+Outputs are always typed as `string` (matches GitHub Actions' runtime contract).
+
+Import the generated wrapper directly from your workflow file:
+
+```ts
+import { setupGo } from '../typed-gha-actions/actions-setup-go.js'
+
+// usage is identical to a built-in wrapper
+setupGo({ with: { 'go-version': '1.23' } })
+```
+
 ## Comparison with related projects
 
 | Project | API | Typed action wrappers |
@@ -116,15 +158,15 @@ GitHub Actions expression.
 **Phase 1 (shipped)** — functional API, 11 handwritten typed wrappers, `gha build`
 CLI with `--check` mode.
 
-**Phase 1.5 (this release)** — publishable packages: `tsc` compile pipeline,
+**Phase 1.5 (shipped)** — publishable packages: `tsc` compile pipeline,
 node shebang on the CLI bin, TSDoc on all public API surfaces.
 
-**Phase 2 (next)** — `gha add <owner/repo@ref>` generates a typed wrapper from
-any action's `action.yml`, using the same `makeAction` factory shape as the
-handwritten set. Workflow code written against Phase 1 wrappers keeps working
-unchanged.
+**Phase 2 (shipped)** — `gha add <owner/repo@ref>` generates a typed wrapper
+from any action's `action.yml`, using the same `makeAction` factory shape as
+the handwritten set. Workflow code written against Phase 1 wrappers keeps
+working unchanged.
 
-**Phase 3 (stretch)** — typed step outputs across `needs()` / `stepOutput()`
+**Phase 3 (next)** — typed step outputs across `needs()` / `stepOutput()`
 helpers, enabled by the `const` type-parameter preservation landed in Phase 1.
 
 ## Links

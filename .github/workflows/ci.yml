@@ -24,7 +24,7 @@ jobs:
       - name: Typecheck
         run: pnpm -r typecheck
       - name: Workflow drift
-        run: pnpm exec gha build --check
+        run: node packages/cli/dist/index.js build --check
   test:
     runs-on: ubuntu-latest
     strategy:

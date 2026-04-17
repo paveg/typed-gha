@@ -18,7 +18,7 @@ export default defineWorkflow({
         { name: 'Install', run: 'pnpm install --frozen-lockfile' },
         { name: 'Build', run: 'pnpm build' },
         { name: 'Typecheck', run: 'pnpm -r typecheck' },
-        { name: 'Workflow drift', run: 'pnpm exec gha build --check' },
+        { name: 'Workflow drift', run: 'node packages/cli/dist/index.js build --check' },
       ],
     },
     test: {

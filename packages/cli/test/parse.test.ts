@@ -99,7 +99,9 @@ runs:
   main: index.js
 `
     const result = parseActionYaml(raw)
-    expect(result.outputs).toEqual([{ key: 'cache-hit', description: 'Whether there was a cache hit' }])
+    expect(result.outputs).toEqual([
+      { key: 'cache-hit', description: 'Whether there was a cache hit' },
+    ])
   })
 
   it('handles empty inputs and outputs', () => {

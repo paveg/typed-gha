@@ -15,14 +15,7 @@ import {
   wrangler,
   awsCredentials,
 } from '../src/actions/index.js'
-import type {
-  CheckoutInputs,
-  CheckoutOutputs,
-  SetupNodeInputs,
-  SetupNodeOutputs,
-  UploadArtifactInputs,
-  UploadArtifactOutputs,
-} from '../src/actions/index.js'
+import type { CheckoutOutputs, SetupNodeOutputs } from '../src/actions/index.js'
 
 describe('actions runtime behavior', () => {
   it('checkout() returns uses with no with key', () => {
@@ -75,10 +68,7 @@ describe('actions runtime behavior', () => {
       jobs: {
         t: {
           'runs-on': 'ubuntu-latest',
-          steps: [
-            checkout(),
-            setupNode({ with: { 'node-version': '20', cache: 'pnpm' } }),
-          ],
+          steps: [checkout(), setupNode({ with: { 'node-version': '20', cache: 'pnpm' } })],
         },
       },
     })

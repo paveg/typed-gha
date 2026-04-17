@@ -4,7 +4,13 @@ import { parseArgs } from '../src/args.js'
 describe('parseArgs', () => {
   it('defaults to build cmd with no extra args', () => {
     const result = parseArgs(['node', 'gha'])
-    expect(result).toEqual({ cmd: 'build', check: false, cwd: process.cwd(), ref: '', dir: '.github/typed-gha-actions' })
+    expect(result).toEqual({
+      cmd: 'build',
+      check: false,
+      cwd: process.cwd(),
+      ref: '',
+      dir: '.github/typed-gha-actions',
+    })
   })
 
   it('parses explicit build command', () => {

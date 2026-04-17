@@ -1,0 +1,7 @@
+**/.github/workflows/*.yml
+**/dist/**
+**/node_modules/**
+**/coverage/**
+**/*.snap
+pnpm-lock.yaml
+.claude/**

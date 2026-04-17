@@ -1,10 +1,13 @@
 {
   "name": "@typed-gha/cli",
   "version": "0.0.1",
+  "bin": {
+    "gha": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "engines": { "node": ">=22.0.0" },
-  "bin": { "gha": "./dist/index.js" },
-  "files": ["dist"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -20,5 +23,8 @@
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

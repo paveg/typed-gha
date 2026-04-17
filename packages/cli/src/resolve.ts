@@ -56,7 +56,12 @@ const resolveLocalPath = async (input: string): Promise<ActionSource> => {
   }
 }
 
-const ghFetch = async (owner: string, name: string, ref: string, filename: string): Promise<string> => {
+const ghFetch = async (
+  owner: string,
+  name: string,
+  ref: string,
+  filename: string,
+): Promise<string> => {
   const { stdout } = await execFile('gh', [
     'api',
     `repos/${owner}/${name}/contents/${filename}?ref=${ref}`,
@@ -68,7 +73,12 @@ const ghFetch = async (owner: string, name: string, ref: string, filename: strin
   return Buffer.from(b64, 'base64').toString('utf8')
 }
 
-const httpFetch = async (owner: string, name: string, ref: string, filename: string): Promise<string> => {
+const httpFetch = async (
+  owner: string,
+  name: string,
+  ref: string,
+  filename: string,
+): Promise<string> => {
   const url = `https://raw.githubusercontent.com/${owner}/${name}/${ref}/${filename}`
   const res = await fetch(url)
   if (!res.ok) {

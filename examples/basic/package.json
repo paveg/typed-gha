@@ -9,8 +9,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@typed-gha/core": "workspace:*",
-    "@typed-gha/cli": "workspace:*"
+    "@typed-gha/cli": "workspace:*",
+    "@typed-gha/core": "workspace:*"
   },
   "devDependencies": {
     "vitest": "2.1.9"

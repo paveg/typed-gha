@@ -16,6 +16,8 @@ export default defineWorkflow({
         setupPnpm(),
         setupNode({ with: { 'node-version': '22', cache: 'pnpm' } }),
         { name: 'Install', run: 'pnpm install --frozen-lockfile' },
+        { name: 'Lint', run: 'pnpm lint' },
+        { name: 'Format', run: 'pnpm format:check' },
         { name: 'Build', run: 'pnpm build' },
         { name: 'Typecheck', run: 'pnpm -r typecheck' },
         { name: 'Workflow drift', run: 'node packages/cli/dist/index.js build --check' },

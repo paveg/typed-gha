@@ -52,6 +52,4 @@ export type CacheOutputs = {
  * ]
  * ```
  */
-export const cache = makeAction<'actions/cache@v4', CacheInputs, CacheOutputs>(
-  'actions/cache@v4',
-)
+export const cache = makeAction<'actions/cache@v4', CacheInputs, CacheOutputs>('actions/cache@v4')

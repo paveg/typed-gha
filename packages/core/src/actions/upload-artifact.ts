@@ -50,6 +50,8 @@ export type UploadArtifactOutputs = {
  * ]
  * ```
  */
-export const uploadArtifact = makeAction<'actions/upload-artifact@v4', UploadArtifactInputs, UploadArtifactOutputs>(
+export const uploadArtifact = makeAction<
   'actions/upload-artifact@v4',
-)
+  UploadArtifactInputs,
+  UploadArtifactOutputs
+>('actions/upload-artifact@v4')

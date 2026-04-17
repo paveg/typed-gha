@@ -66,6 +66,8 @@ export type AwsCredentialsOutputs = {
  * ]
  * ```
  */
-export const awsCredentials = makeAction<'aws-actions/configure-aws-credentials@v4', AwsCredentialsInputs, AwsCredentialsOutputs>(
+export const awsCredentials = makeAction<
   'aws-actions/configure-aws-credentials@v4',
-)
+  AwsCredentialsInputs,
+  AwsCredentialsOutputs
+>('aws-actions/configure-aws-credentials@v4')

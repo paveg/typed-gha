@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "perf": "error",
+    "suspicious": "error",
+    "pedantic": "off",
+    "style": "off",
+    "restriction": "off",
+    "nursery": "off"
+  },
+  "rules": {
+    "no-class-assign": "error",
+    "no-empty": ["error", { "allowEmptyCatch": false }],
+    "no-unused-vars": ["error", { "args": "after-used", "argsIgnorePattern": "^_" }],
+    "no-explicit-any": "error",
+    "typescript/no-explicit-any": "error",
+    "no-await-in-loop": "off",
+    "no-non-null-assertion": "off",
+    "typescript/no-non-null-assertion": "off"
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "**/coverage/**",
+    "**/.claude/**",
+    "**/*.workflow.ts.snap",
+    "examples/basic/test/__snapshots__/**"
+  ]
+}

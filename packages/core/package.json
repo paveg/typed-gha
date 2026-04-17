@@ -1,8 +1,10 @@
 {
   "name": "@typed-gha/core",
   "version": "0.0.1",
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "engines": { "node": ">=20.0.0" },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -19,15 +21,19 @@
       "import": "./dist/actions/_factory.js"
     }
   },
-  "files": ["dist"],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "build": "tsc -p tsconfig.build.json"
   },
-  "dependencies": { "yaml": "^2.6.0" },
+  "dependencies": {
+    "yaml": "^2.6.0"
+  },
   "devDependencies": {
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

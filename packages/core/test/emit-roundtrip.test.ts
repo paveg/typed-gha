@@ -20,10 +20,7 @@ describe('emit → yaml.parse roundtrip', () => {
           strategy: {
             matrix: { 'node-version': ['20', '22'] },
           },
-          steps: [
-            { run: 'pnpm install' },
-            { run: 'pnpm test', env: { CI: true } },
-          ],
+          steps: [{ run: 'pnpm install' }, { run: 'pnpm test', env: { CI: true } }],
         },
         deploy: {
           'runs-on': 'ubuntu-latest',

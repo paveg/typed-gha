@@ -32,7 +32,7 @@ describe('findWorkflows', () => {
     await writeFile(join(nmDir, 'should-ignore.workflow.ts'), 'export default {}')
 
     const found = await findWorkflows(tmp)
-    const names = found.map(p => p.split('/').pop())
+    const names = found.map((p) => p.split('/').pop())
 
     expect(found).toHaveLength(3)
     expect(names).toContain('ci.workflow.ts')

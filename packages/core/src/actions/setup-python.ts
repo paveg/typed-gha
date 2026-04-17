@@ -50,6 +50,8 @@ export type SetupPythonOutputs = {
  * ]
  * ```
  */
-export const setupPython = makeAction<'actions/setup-python@v5', SetupPythonInputs, SetupPythonOutputs>(
+export const setupPython = makeAction<
   'actions/setup-python@v5',
-)
+  SetupPythonInputs,
+  SetupPythonOutputs
+>('actions/setup-python@v5')

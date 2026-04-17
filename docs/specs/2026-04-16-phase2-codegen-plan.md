@@ -14,31 +14,32 @@
 
 ### New files
 
-| File | Responsibility |
-|---|---|
-| `packages/cli/src/parse.ts` | `parseActionYaml(raw: string): ParsedAction` — YAML string → structured inputs/outputs with inferred types |
-| `packages/cli/src/generate.ts` | `generateWrapper(parsed: ParsedAction, source: ActionSource): string` — structured data → TypeScript source |
-| `packages/cli/src/resolve.ts` | `resolveAction(input: string): Promise<ActionSource>` — local/remote resolver |
-| `packages/cli/src/add.ts` | `runAdd(opts): Promise<AddResult>` — orchestrator: resolve → parse → generate → write |
-| `packages/cli/test/parse.test.ts` | Parser unit tests |
-| `packages/cli/test/generate.test.ts` | Generator unit tests |
-| `packages/cli/test/resolve.test.ts` | Resolver unit tests (local only) |
-| `packages/cli/test/add.test.ts` | Integration tests |
+| File                                 | Responsibility                                                                                              |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `packages/cli/src/parse.ts`          | `parseActionYaml(raw: string): ParsedAction` — YAML string → structured inputs/outputs with inferred types  |
+| `packages/cli/src/generate.ts`       | `generateWrapper(parsed: ParsedAction, source: ActionSource): string` — structured data → TypeScript source |
+| `packages/cli/src/resolve.ts`        | `resolveAction(input: string): Promise<ActionSource>` — local/remote resolver                               |
+| `packages/cli/src/add.ts`            | `runAdd(opts): Promise<AddResult>` — orchestrator: resolve → parse → generate → write                       |
+| `packages/cli/test/parse.test.ts`    | Parser unit tests                                                                                           |
+| `packages/cli/test/generate.test.ts` | Generator unit tests                                                                                        |
+| `packages/cli/test/resolve.test.ts`  | Resolver unit tests (local only)                                                                            |
+| `packages/cli/test/add.test.ts`      | Integration tests                                                                                           |
 
 ### Modified files
 
-| File | Change |
-|---|---|
-| `packages/cli/src/args.ts` | Add `AddArgs` fields, extend `parseArgs` to handle `add` subcommand with positional `<ref>` + `--dir` flag |
-| `packages/cli/src/index.ts` | Route `add` command to `runAdd`, print result |
-| `packages/cli/test/args.test.ts` | Add test cases for `add` subcommand parsing |
-| `packages/core/package.json` | Add `./actions/_factory` subpath export |
+| File                             | Change                                                                                                     |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `packages/cli/src/args.ts`       | Add `AddArgs` fields, extend `parseArgs` to handle `add` subcommand with positional `<ref>` + `--dir` flag |
+| `packages/cli/src/index.ts`      | Route `add` command to `runAdd`, print result                                                              |
+| `packages/cli/test/args.test.ts` | Add test cases for `add` subcommand parsing                                                                |
+| `packages/core/package.json`     | Add `./actions/_factory` subpath export                                                                    |
 
 ---
 
 ### Task 1: Expose `makeAction` via core subpath export
 
 **Files:**
+
 - Modify: `packages/core/package.json`
 
 - [ ] **Step 1: Add the subpath export**
@@ -77,6 +78,7 @@ are decoupled from the internal _factory module structure."
 ### Task 2: Parser — `parseActionYaml`
 
 **Files:**
+
 - Create: `packages/cli/src/parse.ts`
 - Create: `packages/cli/test/parse.test.ts`
 
@@ -186,7 +188,9 @@ runs:
   main: index.js
 `
     const result = parseActionYaml(raw)
-    expect(result.outputs).toEqual([{ key: 'cache-hit', description: 'Whether there was a cache hit' }])
+    expect(result.outputs).toEqual([
+      { key: 'cache-hit', description: 'Whether there was a cache hit' },
+    ])
   })
 
   it('handles empty inputs and outputs', () => {
@@ -308,6 +312,7 @@ git commit -m "feat(cli): action.yml parser with boolean/number type inference"
 ### Task 3: Code generator — `generateWrapper`
 
 **Files:**
+
 - Create: `packages/cli/src/generate.ts`
 - Create: `packages/cli/test/generate.test.ts`
 
@@ -378,7 +383,15 @@ describe('generateWrapper', () => {
   it('renders boolean | string type for boolean-default inputs', () => {
     const action: ParsedAction = {
       ...minimalAction,
-      inputs: [{ key: 'lfs', description: 'Use LFS', required: false, default: false, inferredType: 'boolean | string' }],
+      inputs: [
+        {
+          key: 'lfs',
+          description: 'Use LFS',
+          required: false,
+          default: false,
+          inferredType: 'boolean | string',
+        },
+      ],
     }
     const result = generateWrapper(action, makeSource('actions/checkout@v4'))
     expect(result).toContain('lfs?: boolean | string')
@@ -387,7 +400,15 @@ describe('generateWrapper', () => {
   it('renders number | string type for numeric-default inputs', () => {
     const action: ParsedAction = {
       ...minimalAction,
-      inputs: [{ key: 'fetch-depth', description: 'Depth', required: false, default: 1, inferredType: 'number | string' }],
+      inputs: [
+        {
+          key: 'fetch-depth',
+          description: 'Depth',
+          required: false,
+          default: 1,
+          inferredType: 'number | string',
+        },
+      ],
     }
     const result = generateWrapper(action, makeSource('actions/checkout@v4'))
     expect(result).toContain("'fetch-depth'?: number | string")
@@ -396,14 +417,25 @@ describe('generateWrapper', () => {
   it('adds @defaultValue tag when default exists', () => {
     const action: ParsedAction = {
       ...minimalAction,
-      inputs: [{ key: 'clean', description: 'Clean', required: false, default: true, inferredType: 'boolean | string' }],
+      inputs: [
+        {
+          key: 'clean',
+          description: 'Clean',
+          required: false,
+          default: true,
+          inferredType: 'boolean | string',
+        },
+      ],
     }
     const result = generateWrapper(action, makeSource('actions/checkout@v4'))
     expect(result).toContain('@defaultValue true')
   })
 
   it('adds @see link when repoUrl is provided', () => {
-    const result = generateWrapper(minimalAction, makeSource('actions/checkout@v4', 'https://github.com/actions/checkout'))
+    const result = generateWrapper(
+      minimalAction,
+      makeSource('actions/checkout@v4', 'https://github.com/actions/checkout'),
+    )
     expect(result).toContain('@see https://github.com/actions/checkout')
   })
 
@@ -448,11 +480,13 @@ import type { ParsedAction, ParsedInput } from './parse.js'
 import type { ActionSource } from './resolve.js'
 
 const toCamelCase = (s: string): string =>
-  s.replace(/[-_\s]+(.)/g, (_, c: string) => c.toUpperCase())
+  s
+    .replace(/[-_\s]+(.)/g, (_, c: string) => c.toUpperCase())
     .replace(/^(.)/, (_, c: string) => c.toLowerCase())
 
 const toPascalCase = (s: string): string =>
-  s.replace(/[-_\s]+(.)/g, (_, c: string) => c.toUpperCase())
+  s
+    .replace(/[-_\s]+(.)/g, (_, c: string) => c.toUpperCase())
     .replace(/^(.)/, (_, c: string) => c.toUpperCase())
 
 const deriveBaseName = (source: ActionSource): string => {
@@ -466,7 +500,8 @@ const quoteKey = (key: string): string =>
 const renderInputField = (input: ParsedInput): string => {
   const lines: string[] = []
   if (input.description) {
-    const defaultTag = input.default !== undefined ? ` @defaultValue ${JSON.stringify(input.default)}` : ''
+    const defaultTag =
+      input.default !== undefined ? ` @defaultValue ${JSON.stringify(input.default)}` : ''
     lines.push(`  /** ${input.description}${defaultTag} */`)
   } else if (input.default !== undefined) {
     lines.push(`  /** @defaultValue ${JSON.stringify(input.default)} */`)
@@ -555,6 +590,7 @@ function names, PascalCase type names, boolean/number inferred types,
 ### Task 4: Resolver — `resolveAction`
 
 **Files:**
+
 - Modify: `packages/cli/src/resolve.ts` (replace type-only stub with full implementation)
 - Create: `packages/cli/test/resolve.test.ts`
 
@@ -666,8 +702,10 @@ const fetchViaGh = async (owner: string, name: string, ref: string): Promise<str
   for (const filename of ['action.yml', 'action.yaml']) {
     try {
       const { stdout } = await execFileAsync('gh', [
-        'api', `repos/${owner}/${name}/contents/${filename}?ref=${ref}`,
-        '--jq', '.content',
+        'api',
+        `repos/${owner}/${name}/contents/${filename}?ref=${ref}`,
+        '--jq',
+        '.content',
       ])
       return Buffer.from(stdout.trim(), 'base64').toString('utf8')
     } catch {
@@ -703,7 +741,8 @@ export const resolveAction = async (input: string): Promise<ActionSource> => {
   if (ghResult) return { raw: ghResult, ref: input, repoUrl: `https://github.com/${owner}/${name}` }
 
   const httpResult = await fetchViaHttp(owner, name, ref)
-  if (httpResult) return { raw: httpResult, ref: input, repoUrl: `https://github.com/${owner}/${name}` }
+  if (httpResult)
+    return { raw: httpResult, ref: input, repoUrl: `https://github.com/${owner}/${name}` }
 
   throw new Error(`No action.yml found at ${owner}/${name}@${ref}`)
 }
@@ -730,6 +769,7 @@ githubusercontent.com fallback."
 ### Task 5: CLI args — extend `parseArgs` for `add` subcommand
 
 **Files:**
+
 - Modify: `packages/cli/src/args.ts`
 - Modify: `packages/cli/test/args.test.ts`
 
@@ -738,26 +778,26 @@ githubusercontent.com fallback."
 Append to `packages/cli/test/args.test.ts`:
 
 ```ts
-  it('parses add subcommand with action ref', () => {
-    const result = parseArgs(['node', 'gha', 'add', 'actions/checkout@v4'])
-    expect(result.cmd).toBe('add')
-    expect(result.ref).toBe('actions/checkout@v4')
-    expect(result.dir).toBe('.github/typed-gha-actions')
-  })
+it('parses add subcommand with action ref', () => {
+  const result = parseArgs(['node', 'gha', 'add', 'actions/checkout@v4'])
+  expect(result.cmd).toBe('add')
+  expect(result.ref).toBe('actions/checkout@v4')
+  expect(result.dir).toBe('.github/typed-gha-actions')
+})
 
-  it('parses add with --dir flag', () => {
-    const result = parseArgs(['node', 'gha', 'add', 'actions/checkout@v4', '--dir', '/tmp/out'])
-    expect(result.dir).toBe('/tmp/out')
-  })
+it('parses add with --dir flag', () => {
+  const result = parseArgs(['node', 'gha', 'add', 'actions/checkout@v4', '--dir', '/tmp/out'])
+  expect(result.dir).toBe('/tmp/out')
+})
 
-  it('throws when add has no ref argument', () => {
-    expect(() => parseArgs(['node', 'gha', 'add'])).toThrow(/action ref is required/)
-  })
+it('throws when add has no ref argument', () => {
+  expect(() => parseArgs(['node', 'gha', 'add'])).toThrow(/action ref is required/)
+})
 
-  it('parses add with local path ref', () => {
-    const result = parseArgs(['node', 'gha', 'add', './my-action'])
-    expect(result.ref).toBe('./my-action')
-  })
+it('parses add with local path ref', () => {
+  const result = parseArgs(['node', 'gha', 'add', './my-action'])
+  expect(result.ref).toBe('./my-action')
+})
 ```
 
 - [ ] **Step 2: Run tests to verify red**
@@ -790,7 +830,8 @@ export const parseArgs = (argv: readonly string[]): CliArgs => {
 
   if (cmd === 'add') {
     const ref = argv[3]
-    if (!ref || ref.startsWith('--')) throw new Error('action ref is required (e.g., gha add actions/checkout@v4)')
+    if (!ref || ref.startsWith('--'))
+      throw new Error('action ref is required (e.g., gha add actions/checkout@v4)')
     args.ref = ref
     for (let i = 4; i < argv.length; i++) {
       const arg = argv[i]
@@ -843,6 +884,7 @@ git commit -m "feat(cli): extend parseArgs with add subcommand and --dir flag"
 ### Task 6: Orchestrator + CLI routing — `runAdd` and `index.ts`
 
 **Files:**
+
 - Create: `packages/cli/src/add.ts`
 - Modify: `packages/cli/src/index.ts`
 - Create: `packages/cli/test/add.test.ts`
@@ -1002,7 +1044,7 @@ const main = async (): Promise<void> => {
 }
 
 void main().catch((e: unknown) => {
-  process.stderr.write(`${e instanceof Error ? e.stack ?? e.message : String(e)}\n`)
+  process.stderr.write(`${e instanceof Error ? (e.stack ?? e.message) : String(e)}\n`)
   process.exit(1)
 })
 ```
@@ -1033,6 +1075,7 @@ parent-name.ts for local). Creates output directory if needed."
 ### Task 7: Build, smoke test, end-to-end verification
 
 **Files:**
+
 - No new files — verification only.
 
 - [ ] **Step 1: Build all packages**
@@ -1084,13 +1127,13 @@ Expected: All green. Show exact test count and exit codes.
 
 ## Summary
 
-| Task | What | New tests |
-|---|---|---|
-| 1 | Core subpath export for `_factory` | 0 (manual verification) |
-| 2 | Parser (`parseActionYaml`) | 8 |
-| 3 | Generator (`generateWrapper`) | 12 |
-| 4 | Resolver (`resolveAction`) | 6 |
-| 5 | CLI args extension | 4 |
-| 6 | Orchestrator + routing | 4 |
-| 7 | Build + smoke verification | 0 |
-| **Total** | | **~34 new tests** |
+| Task      | What                               | New tests               |
+| --------- | ---------------------------------- | ----------------------- |
+| 1         | Core subpath export for `_factory` | 0 (manual verification) |
+| 2         | Parser (`parseActionYaml`)         | 8                       |
+| 3         | Generator (`generateWrapper`)      | 12                      |
+| 4         | Resolver (`resolveAction`)         | 6                       |
+| 5         | CLI args extension                 | 4                       |
+| 6         | Orchestrator + routing             | 4                       |
+| 7         | Build + smoke verification         | 0                       |
+| **Total** |                                    | **~34 new tests**       |

@@ -21,6 +21,6 @@ const main = async (): Promise<void> => {
 }
 
 void main().catch((e: unknown) => {
-  process.stderr.write(`${e instanceof Error ? e.stack ?? e.message : String(e)}\n`)
+  process.stderr.write(`${e instanceof Error ? (e.stack ?? e.message) : String(e)}\n`)
   process.exit(1)
 })

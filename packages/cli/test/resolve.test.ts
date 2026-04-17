@@ -192,9 +192,7 @@ describe('resolveAction – remote fetch paths', () => {
     execFileStub.mockRejectedValue(new Error('gh unavailable'))
     ;(globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, status: 404 })
 
-    await expect(resolveAction('actions/checkout@v4')).rejects.toThrow(
-      'actions/checkout@v4',
-    )
+    await expect(resolveAction('actions/checkout@v4')).rejects.toThrow('actions/checkout@v4')
   })
 
   it('base64 decode produces exact original content', async () => {

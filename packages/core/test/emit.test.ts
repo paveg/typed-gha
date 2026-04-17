@@ -133,9 +133,7 @@ describe('emitYaml', () => {
       jobs: {
         build: {
           'runs-on': 'ubuntu-latest',
-          steps: [
-            { uses: 'actions/checkout@v4', __outputs: { ref: '' } as never } as never,
-          ],
+          steps: [{ uses: 'actions/checkout@v4', __outputs: { ref: '' } as never } as never],
         },
       },
     }

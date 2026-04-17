@@ -2,17 +2,24 @@
   "name": "typed-gha",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.25.0",
   "scripts": {
     "build": "pnpm -r --filter './packages/*' build",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "check": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test",
     "example:build": "pnpm --filter example exec gha build"
   },
   "devDependencies": {
     "@typed-gha/cli": "workspace:*",
     "@typed-gha/core": "workspace:*",
+    "oxfmt": "0.45.0",
+    "oxlint": "1.60.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0"
-  }
+  },
+  "packageManager": "pnpm@10.25.0"
 }

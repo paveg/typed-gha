@@ -16,11 +16,11 @@ gha add <action-ref> [--dir <path>]
 
 ### `<action-ref>` formats
 
-| Format | Example | Resolution |
-|---|---|---|
-| Remote (owner/name@ref) | `actions/checkout@v4` | GitHub API or raw.githubusercontent.com |
-| Local file | `./actions/my-action/action.yml` | `fs.readFile` |
-| Local directory | `./actions/my-action/` | Look for `action.yml`, then `action.yaml` |
+| Format                  | Example                          | Resolution                                |
+| ----------------------- | -------------------------------- | ----------------------------------------- |
+| Remote (owner/name@ref) | `actions/checkout@v4`            | GitHub API or raw.githubusercontent.com   |
+| Local file              | `./actions/my-action/action.yml` | `fs.readFile`                             |
+| Local directory         | `./actions/my-action/`           | Look for `action.yml`, then `action.yaml` |
 
 Ref is **required** for remote actions. `gha add actions/checkout` (no `@ref`) is an
 error: `"ref is required (e.g., actions/checkout@v4)"`.
@@ -49,8 +49,8 @@ Unified interface for fetching action.yml from any source:
 
 ```ts
 type ActionSource = {
-  raw: string            // action.yml content
-  ref: string            // 'actions/checkout@v4' or './path/to/action'
+  raw: string // action.yml content
+  ref: string // 'actions/checkout@v4' or './path/to/action'
   repoUrl: string | null // GitHub URL for @see links (null for local)
 }
 ```
@@ -92,7 +92,7 @@ type ParsedAction = {
 }
 
 type ParsedInput = {
-  key: string          // original YAML key (e.g., 'fetch-depth')
+  key: string // original YAML key (e.g., 'fetch-depth')
   description: string
   required: boolean
   default?: string | boolean | number
@@ -109,11 +109,11 @@ type ParsedOutput = {
 
 Applied to each input based on its `default` value:
 
-| Signal | Inferred TS type | Example |
-|---|---|---|
-| `default: true` or `default: false` | `boolean \| string` | `lfs: { default: false }` |
-| `default` is a number (0, 1, etc.) | `number \| string` | `fetch-depth: { default: 1 }` |
-| Everything else | `string` | Most inputs |
+| Signal                              | Inferred TS type    | Example                       |
+| ----------------------------------- | ------------------- | ----------------------------- |
+| `default: true` or `default: false` | `boolean \| string` | `lfs: { default: false }`     |
+| `default` is a number (0, 1, etc.)  | `number \| string`  | `fetch-depth: { default: 1 }` |
+| Everything else                     | `string`            | Most inputs                   |
 
 Enum inference from `description` text is explicitly deferred — too fragile for
 automated generation. Users who want narrower types should write a manual wrapper
@@ -157,11 +157,9 @@ export type CheckoutOutputs = {
   commit: string
 }
 
-export const checkout = makeAction<
+export const checkout = makeAction<'actions/checkout@v4', CheckoutInputs, CheckoutOutputs>(
   'actions/checkout@v4',
-  CheckoutInputs,
-  CheckoutOutputs
->('actions/checkout@v4')
+)
 ```
 
 ### Naming conventions
@@ -209,20 +207,20 @@ factory signature. Same decision as Phase 1.
 
 ### New files in `packages/cli/src/`
 
-| File | Responsibility |
-|---|---|
-| `add.ts` | `runAdd(opts)` orchestrator: resolve → parse → generate → write |
-| `resolve.ts` | Action.yml fetching (local + remote) |
-| `parse.ts` | YAML parse + inputs/outputs extraction + type inference |
-| `generate.ts` | ParsedAction → TypeScript source string |
+| File          | Responsibility                                                  |
+| ------------- | --------------------------------------------------------------- |
+| `add.ts`      | `runAdd(opts)` orchestrator: resolve → parse → generate → write |
+| `resolve.ts`  | Action.yml fetching (local + remote)                            |
+| `parse.ts`    | YAML parse + inputs/outputs extraction + type inference         |
+| `generate.ts` | ParsedAction → TypeScript source string                         |
 
 ### Changed files
 
-| File | Change |
-|---|---|
-| `packages/cli/src/args.ts` | Add `add` subcommand + `--dir` flag parsing |
-| `packages/cli/src/index.ts` | Route `add` command to `runAdd` |
-| `packages/core/package.json` | Add `./actions/_factory` subpath export |
+| File                         | Change                                      |
+| ---------------------------- | ------------------------------------------- |
+| `packages/cli/src/args.ts`   | Add `add` subcommand + `--dir` flag parsing |
+| `packages/cli/src/index.ts`  | Route `add` command to `runAdd`             |
+| `packages/core/package.json` | Add `./actions/_factory` subpath export     |
 
 ## Test strategy
 

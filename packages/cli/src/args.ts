@@ -49,7 +49,8 @@ export const parseArgs = (argv: readonly string[]): CliArgs => {
 
   if (cmd === 'add') {
     const ref = argv[3]
-    if (!ref || ref.startsWith('--')) throw new Error('action ref is required (e.g., gha add actions/checkout@v4)')
+    if (!ref || ref.startsWith('--'))
+      throw new Error('action ref is required (e.g., gha add actions/checkout@v4)')
     args.ref = ref
     for (let i = 4; i < argv.length; i++) {
       const arg = argv[i]

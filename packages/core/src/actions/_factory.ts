@@ -19,6 +19,8 @@ export const makeAction =
     return {
       uses: ref,
       ...rest,
-      ...(withArg !== undefined ? { with: withArg as Record<string, string | number | boolean> } : {}),
+      ...(withArg !== undefined
+        ? { with: withArg as Record<string, string | number | boolean> }
+        : {}),
     } as UsesStep<Ref, Id, Outputs>
   }

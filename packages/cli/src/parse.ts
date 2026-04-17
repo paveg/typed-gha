@@ -35,13 +35,13 @@ export const parseActionYaml = (raw: string): ParsedAction => {
   const rawOutputs = (doc.outputs ?? {}) as Record<string, Record<string, unknown>>
   const runs = (doc.runs ?? {}) as Record<string, unknown>
 
-  const inputs: ParsedInput[] = Object.entries(rawInputs).map(([key, val]) => ({
-    key,
-    description: String(val.description ?? ''),
-    required: val.required === true,
-    ...(val.default !== undefined ? { default: val.default as string | boolean | number } : {}),
-    inferredType: inferType(val.default),
-  }))
+  const inputs: ParsedInput[] = Object.entries(rawInputs).map(([key, val]) =>
+    Object.assign(
+      { key, description: String(val.description ?? ``), required: val.required === true },
+      val.default !== undefined ? { default: val.default as string | boolean | number } : {},
+      { inferredType: inferType(val.default) },
+    ),
+  )
 
   const outputs: ParsedOutput[] = Object.entries(rawOutputs).map(([key, val]) => ({
     key,

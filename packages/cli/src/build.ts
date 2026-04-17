@@ -42,12 +42,7 @@ const loadWorkflow = async (file: string): Promise<Workflow> => {
   ) {
     value = (value as { default?: unknown }).default
   }
-  if (
-    value === null ||
-    value === undefined ||
-    typeof value !== 'object' ||
-    !('jobs' in value)
-  ) {
+  if (value === null || value === undefined || typeof value !== 'object' || !('jobs' in value)) {
     throw new Error(`${file}: missing default export of a Workflow object`)
   }
   return value as Workflow
@@ -76,10 +71,7 @@ const buildOne = async (file: string): Promise<BuildOne> => {
  * @param opts.check - If `true`, compare generated YAML against existing files instead of writing.
  * @returns A `BuildResult` describing what was compiled, written, and (in check mode) drifted.
  */
-export const runBuild = async (opts: {
-  cwd: string
-  check: boolean
-}): Promise<BuildResult> => {
+export const runBuild = async (opts: { cwd: string; check: boolean }): Promise<BuildResult> => {
   const files = await findWorkflows(opts.cwd)
   const built: BuildOne[] = []
   const written: string[] = []

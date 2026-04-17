@@ -61,10 +61,7 @@ export default defineWorkflow({
   jobs: {
     test: {
       'runs-on': 'ubuntu-latest',
-      steps: [
-        checkout(),
-        setupNode({ with: { 'node-version': '22', cache: 'pnpm' } }),
-      ],
+      steps: [checkout(), setupNode({ with: { 'node-version': '22', cache: 'pnpm' } })],
     },
   },
 })
@@ -105,13 +102,13 @@ Typed helpers produce the correct `${{ ... }}` strings:
 ```ts
 import { secret, needs, matrix, stepOutput, variable, github, env, expr } from '@typed-gha/core'
 
-secret('NPM_TOKEN')          // ${{ secrets.NPM_TOKEN }}
-needs('build', 'sha')        // ${{ needs.build.outputs.sha }}
-matrix('node-version')       // ${{ matrix.node-version }}
+secret('NPM_TOKEN') // ${{ secrets.NPM_TOKEN }}
+needs('build', 'sha') // ${{ needs.build.outputs.sha }}
+matrix('node-version') // ${{ matrix.node-version }}
 stepOutput('meta', 'digest') // ${{ steps.meta.outputs.digest }}
-variable('DEPLOY_ENV')       // ${{ vars.DEPLOY_ENV }}
-github('ref')                // ${{ github.ref }}
-env('MY_FLAG')               // ${{ env.MY_FLAG }}
+variable('DEPLOY_ENV') // ${{ vars.DEPLOY_ENV }}
+github('ref') // ${{ github.ref }}
+env('MY_FLAG') // ${{ env.MY_FLAG }}
 expr("contains(github.ref, 'main')") // ${{ contains(github.ref, 'main') }}
 ```
 
@@ -139,11 +136,11 @@ The generated file is committed to your repo. Re-run the same command after a
 ref bump (`@v5` → `@v6`) to regenerate. Type inference applies a small set of
 heuristics from the action's `default` values:
 
-| `action.yml` says | Generated TS type |
-| --- | --- |
+| `action.yml` says                  | Generated TS type   |
+| ---------------------------------- | ------------------- |
 | `default: false` / `default: true` | `boolean \| string` |
-| `default: 1` (any number) | `number \| string` |
-| `default: "foo"` or no default | `string` |
+| `default: 1` (any number)          | `number \| string`  |
+| `default: "foo"` or no default     | `string`            |
 
 Outputs are always typed as `string` (matches GitHub Actions' runtime contract).
 
@@ -158,11 +155,11 @@ setupGo({ with: { 'go-version': '1.23' } })
 
 ## Comparison with related projects
 
-| Project | API | Typed action wrappers |
-| --- | --- | --- |
-| `typed-gha` (this) | functional — plain values, no classes | 11 curated; `action.yml` codegen planned (ADR-0002) |
-| [github-actions-workflow-ts](https://github.com/emmanuelnk/github-actions-workflow-ts) | class-based (`Workflow`, `NormalJob`, `Step`) | yes — typed class wrappers for popular actions |
-| [github-actions-wac](https://github.com/webiny/github-actions-wac) | functional (`createWorkflow`) | no — plain objects with standard `uses`/`with` syntax |
+| Project                                                                                | API                                           | Typed action wrappers                                 |
+| -------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| `typed-gha` (this)                                                                     | functional — plain values, no classes         | 11 curated; `action.yml` codegen planned (ADR-0002)   |
+| [github-actions-workflow-ts](https://github.com/emmanuelnk/github-actions-workflow-ts) | class-based (`Workflow`, `NormalJob`, `Step`) | yes — typed class wrappers for popular actions        |
+| [github-actions-wac](https://github.com/webiny/github-actions-wac)                     | functional (`createWorkflow`)                 | no — plain objects with standard `uses`/`with` syntax |
 
 ## Requirements
 

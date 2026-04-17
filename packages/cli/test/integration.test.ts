@@ -55,7 +55,9 @@ describe('Integration: gha add → gha build pipeline', () => {
 
     // 3. Verify the wrapper contains expected structure
     const wrapperContent = await readFile(addResult.outputPath, 'utf8')
-    expect(wrapperContent).toContain("import { makeAction } from '@typed-gha/core/actions/_factory'")
+    expect(wrapperContent).toContain(
+      "import { makeAction } from '@typed-gha/core/actions/_factory'",
+    )
     expect(wrapperContent).toContain('export const setupTool = makeAction<')
     expect(wrapperContent).toContain('version?: string')
 
@@ -147,7 +149,7 @@ export default defineWorkflow({
     const yml = await readFile(result.written[0] as string, 'utf8')
     const parsed = parse(yml) as Record<string, unknown>
     expect(parsed).toHaveProperty('on')
-    expect((parsed.on as Record<string, unknown>)).toHaveProperty('push')
+    expect(parsed.on as Record<string, unknown>).toHaveProperty('push')
     const step = ((parsed.jobs as Record<string, unknown>).deploy as Record<string, unknown>)
       .steps as Record<string, unknown>[]
     const step0 = step[0]

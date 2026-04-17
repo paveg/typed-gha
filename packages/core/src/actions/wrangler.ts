@@ -62,6 +62,8 @@ export type WranglerOutputs = {
  * ]
  * ```
  */
-export const wrangler = makeAction<'cloudflare/wrangler-action@v3', WranglerInputs, WranglerOutputs>(
+export const wrangler = makeAction<
   'cloudflare/wrangler-action@v3',
-)
+  WranglerInputs,
+  WranglerOutputs
+>('cloudflare/wrangler-action@v3')

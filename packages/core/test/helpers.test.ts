@@ -30,9 +30,9 @@ describe('expression helpers', () => {
     expect(matrix('node')).toBe('${{ matrix.node }}')
   })
 
-  it("expr() wraps a raw body in ${{ }}", () => {
+  it('expr() wraps a raw body in ${{ }}', () => {
     expect(expr("success() && github.ref == 'refs/heads/main'")).toBe(
-      "${{ success() && github.ref == 'refs/heads/main' }}"
+      "${{ success() && github.ref == 'refs/heads/main' }}",
     )
   })
 })

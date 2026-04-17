@@ -45,6 +45,8 @@ export type DownloadArtifactOutputs = {
  * ]
  * ```
  */
-export const downloadArtifact = makeAction<'actions/download-artifact@v4', DownloadArtifactInputs, DownloadArtifactOutputs>(
+export const downloadArtifact = makeAction<
   'actions/download-artifact@v4',
-)
+  DownloadArtifactInputs,
+  DownloadArtifactOutputs
+>('actions/download-artifact@v4')
